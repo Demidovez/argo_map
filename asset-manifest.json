@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/argo_map/static/css/main.62c37f94.css",
+    "main.js": "/argo_map/static/js/main.66bb0d76.js",
+    "index.html": "/argo_map/index.html",
+    "main.62c37f94.css.map": "/argo_map/static/css/main.62c37f94.css.map",
+    "main.66bb0d76.js.map": "/argo_map/static/js/main.66bb0d76.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.62c37f94.css",
+    "static/js/main.66bb0d76.js"
+  ]
+}

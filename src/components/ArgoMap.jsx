@@ -16,29 +16,23 @@ const state = {
 const ArgoMap = () => {
   const [fields, setFields] = useState([]);
   const [placeMarker, setPlaceMarker] = useState([]);
-  const ymaps = useYMaps(["Map", "Placemark", "Template"]);
+  const ymaps = useYMaps(["templateLayoutFactory"]);
 
   useEffect(() => {
     const fields = API.getFields();
-
-    // console.log(fields)
 
     setFields(fields);
     setPlaceMarker(JSON.parse(fields?.[0].Location)?.Center);
   }, []);
 
-  //fields?.[0].Location.Center ||
-
   const MyIconContentLayout = useMemo(
     () =>
       ymaps &&
-      ymaps.templateLayoutFactory?.createClass(
+      ymaps.templateLayoutFactory.createClass(
         '<div style="color: #FFFFFF; font-weight: bold;">111111</div>'
       ),
-    [ymaps, ymaps?.templateLayoutFactory]
+    [ymaps]
   );
-
-  console.log(ymaps, ymaps?.templateLayoutFactory)
 
   return (
     <Map
@@ -49,20 +43,11 @@ const ArgoMap = () => {
       <Placemark
         geometry={placeMarker}
         options={{
-          // iconContentLayout: '<div>1111</div>',
-          // iconLayout: 'default#imageWithContent',
           iconContentLayout: MyIconContentLayout,
-          // iconImageSize: [50, 50],
-          // iconImageHref: n
         }}
-       
       />
-      {fields.map((field, index) => {
+      {fields.map((field) => {
         const location = JSON.parse(field.Location);
-
-        if (index === 0) {
-          console.log(location?.Polygon);
-        }
 
         return (
           <Polygon

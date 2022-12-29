@@ -1,6 +1,7 @@
 {
   "name": "argo_map",
   "version": "0.1.0",
+  "homepage": "https://demidovez.github.io/argo_map",
   "private": true,
   "dependencies": {
     "@pbe/react-yandex-maps": "^1.2.2",
@@ -11,7 +12,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -30,5 +32,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
   }
 }

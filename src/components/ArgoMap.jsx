@@ -1,68 +1,67 @@
 import {
-  YMaps,
   Map,
   Placemark,
   Polygon,
   useYMaps,
+  ZoomControl,
 } from "@pbe/react-yandex-maps";
-import { useEffect, useMemo, useState } from "react";
-import { API } from "../api";
+import { Fragment, useEffect, useMemo, useState } from "react";
 
-const state = {
-  zoom: 12,
-  type: "yandex#satellite",
+const POLYGON_OPTIONS = {
+  fillColor: "#FFFFFF00",
+  strokeColor: "#FFFFFF",
+  opacity: 1,
+  strokeWidth: 3,
 };
 
-const ArgoMap = () => {
-  const [fields, setFields] = useState([]);
-  const [placeMarker, setPlaceMarker] = useState([]);
+const ArgoMap = ({ fields = [] }) => {
   const ymaps = useYMaps(["templateLayoutFactory"]);
 
+  const [stateOfMap, setStateOfMap] = useState();
+
   useEffect(() => {
-    const fields = API.getFields();
+    if (fields.length) {
+      setStateOfMap({
+        zoom: 14,
+        type: "yandex#satellite",
+        center: fields[0].Location?.Center,
+      });
+    }
+  }, [fields]);
 
-    setFields(fields);
-    setPlaceMarker(JSON.parse(fields?.[0].Location)?.Center);
-  }, []);
-
-  const MyIconContentLayout = useMemo(
+  // Layout of marker by yandex design
+  const MarkerLayout = useMemo(
     () =>
       ymaps &&
       ymaps.templateLayoutFactory.createClass(
-        '<div style="color: #FFFFFF; font-weight: bold;">111111</div>'
+        '<div class="field-marker">{{ properties.name|default:"?" }}</div>'
       ),
     [ymaps]
   );
 
   return (
-    <Map
-      state={{ ...state, center: placeMarker }}
-      width={"100%"}
-      height={"100%"}
-    >
-      <Placemark
-        geometry={placeMarker}
-        options={{
-          iconContentLayout: MyIconContentLayout,
-        }}
-      />
-      {fields.map((field) => {
-        const location = JSON.parse(field.Location);
-
-        return (
-          <Polygon
-            geometry={[location?.Polygon]}
-            key={field.Id}
-            options={{
-              fillColor: "#FFFFFF00",
-              strokeColor: "#FFFFFF",
-              opacity: 1,
-              strokeWidth: 3,
-            }}
-          />
-        );
-      })}
-    </Map>
+    <>
+      {stateOfMap && (
+        <Map state={stateOfMap} width={"100%"} height={"100%"}>
+          <ZoomControl />
+          {fields.map((field) => (
+            <Fragment key={field.Id}>
+              <Placemark
+                geometry={field.Location?.Center}
+                options={{
+                  iconLayout: MarkerLayout,
+                }}
+                properties={{ name: field.Name }}
+              />
+              <Polygon
+                geometry={[field.Location?.Polygon]}
+                options={POLYGON_OPTIONS}
+              />
+            </Fragment>
+          ))}
+        </Map>
+      )}
+    </>
   );
 };
 
